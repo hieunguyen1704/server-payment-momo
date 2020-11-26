@@ -1,6 +1,5 @@
 export const endpoint = {
   api: {
-    verification: 'verification',
-    resetPassowrd: 'reset-password'
+    initPayment: 'https://test-payment.momo.vn/gw_payment/transactionProcessor',
   }
 };
