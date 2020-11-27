@@ -3,6 +3,7 @@ import { json, urlencoded } from 'body-parser';
 import cors from 'cors';
 import { corsOptions } from './config/cors';
 import  initPaymentRoute  from './resources/init-payment/init_payment.route';
+import ipnPaymentRoute from './resources/ipn_payment/ipn_payment.route';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -16,6 +17,7 @@ app.use(urlencoded({ extended: true }));
 app.use(json());
 
 app.use('/init-payment', initPaymentRoute );
+app.use('/ipn-payment', ipnPaymentRoute );
 
 export const start = () => {
   try {
