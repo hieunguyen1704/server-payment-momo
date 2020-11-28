@@ -5,5 +5,5 @@ export const momoConfig = {
     secretKey: 'NYsh60V43h0eoXvi8tYxubNvfYUwe2NV',
     requestType: "captureMoMoWallet",
     notifyUrl: "https://payment-server-momo.herokuapp.com/ipn-payment", // need to change
-    returnUrl: "https://momo.vn", // need to change
+    returnUrl: "https://warm-bastion-46535.herokuapp.com/products", // need to change
 }
