@@ -3,7 +3,6 @@ import crypto from 'crypto';
 import { momoConfig } from '../../config/momo_payment';
 
 export const ipnPayment = (req, res) => {
-  console.log('ipn request', req.body );
   const {
     partnerCode,
     accessKey,
@@ -34,7 +33,6 @@ export const ipnPayment = (req, res) => {
   .update(resRawSignature)
   .digest('hex');
   if (errorCode === 0 && reqCheckSignature === signature) {
-    console.log('ipn success');
     const responseData = {
       partnerCode,
       accessKey,
@@ -54,7 +52,6 @@ export const ipnPayment = (req, res) => {
     .createHmac('sha256', momoConfig.secretKey)
     .update(resRawSignature)
     .digest('hex');
-    console.log('ipn fail');
     return res.status(400).json({
       partnerCode,
       accessKey,
