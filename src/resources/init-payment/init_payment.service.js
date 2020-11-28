@@ -19,7 +19,6 @@ export const initPayment =  (req, res) =>{
     const signature = crypto.createHmac('sha256', momoConfig.secretKey)
     .update(rawSignature)
     .digest('hex');
-    console.log('signature', signature);
     const initPaymentInfo = {
       partnerCode : momoConfig.partnerCode,
       accessKey :momoConfig.accessKey,
