@@ -1,4 +1,5 @@
 import moment from 'moment';
+import crypto from 'crypto';
 import { momoConfig } from '../../config/momo_payment';
 
 export const ipnPayment = (req, res) => {
@@ -9,20 +10,29 @@ export const ipnPayment = (req, res) => {
     orderId,
     errorCode,
     message,
+    localMessage,
     extraData,
     signature,
     amount,
     orderInfo,
+    orderType,
+    transId,
+    responseTime,
+    payType
   } = req.body;
-  const responseTime = moment().format('YYYY-MM-DD HH:mm:ss');
   //check signature
-  const rawSignature = `partnerCode=${momoConfig.partnerCode}&accessKey=${momoConfig.accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&returnUrl=${momoConfig.returnUrl}&notifyUrl=${momoConfig.notifyUrl}&extraData=${extraData}`;
-  const systemSignature = crypto
+  const reqRawSignature = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&transId=${transId}&message=${message}&localMessage=${localMessage}&responseTime=${responseTime}&errorCode=${errorCode}&payType=${payType}&extraData=${extraData}`;
+  const reqCheckSignature = crypto
     .createHmac('sha256', momoConfig.secretKey)
-    .update(rawSignature)
+    .update(reqRawSignature)
     .digest('hex');
-  console.log(systemSignature, signature);
-  if (errorCode === 0 && systemSignature === signature) {
+  const systemResponseTime = moment().format('YYYY-MM-DD HH:mm:ss');
+  let resRawSignature = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&orderId=${orderId}&errorCode=${errorCode}&message=${message}&responseTime=${responseTime}&extraData=${extraData}`;
+  let resCheckSignature = crypto
+  .createHmac('sha256', momoConfig.secretKey)
+  .update(resRawSignature)
+  .digest('hex');
+  if (errorCode === 0 && reqCheckSignature === signature) {
     const responseData = {
       partnerCode,
       accessKey,
@@ -30,11 +40,30 @@ export const ipnPayment = (req, res) => {
       orderId,
       errorCode,
       message,
-      responseTime,
+      responseTime: systemResponseTime,
       extraData,
-      signature,
+      signature: resCheckSignature,
     };
     return res.status(200).json(responseData);
+  }
+  if(reqCheckSignature !== signature){
+    resRawSignature = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&orderId=${orderId}&errorCode=5&message=Chữ ký không hợp lệ.&responseTime=${responseTime}&extraData=${extraData}`
+    resCheckSignature = crypto
+    .createHmac('sha256', momoConfig.secretKey)
+    .update(resRawSignature)
+    .digest('hex');
+
+    return res.status(400).json({
+      partnerCode,
+      accessKey,
+      requestId,
+      orderId,
+      errorCode: 5,
+      message: 'Chữ ký không hợp lệ.',
+      responseTime: systemResponseTime,
+      extraData,
+      signature: resCheckSignature,
+    });
   }
   return res.status(400).json({
     partnerCode,
@@ -42,9 +71,9 @@ export const ipnPayment = (req, res) => {
     requestId,
     orderId,
     errorCode,
-    message: 'Kiểm tra thất bại',
-    responseTime,
+    message,
+    responseTime: systemResponseTime,
     extraData,
-    signature,
+    signature :resCheckSignature,
   });
 };

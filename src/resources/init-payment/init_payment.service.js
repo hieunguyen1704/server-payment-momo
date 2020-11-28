@@ -19,6 +19,7 @@ export const initPayment =  (req, res) =>{
     const signature = crypto.createHmac('sha256', momoConfig.secretKey)
     .update(rawSignature)
     .digest('hex');
+    console.log('signature', signature);
     const initPaymentInfo = {
       partnerCode : momoConfig.partnerCode,
       accessKey :momoConfig.accessKey,
@@ -33,7 +34,6 @@ export const initPayment =  (req, res) =>{
       orderId
     };
     axios.post(momoConfig.initPaymentEndpoint, initPaymentInfo).then((response)=>{
-        console.log("response data",response.data);
         if(response.data && response.data.errorCode === 0){
           return res.status(200).json({meta: meta.success , data: response.data});
         }
