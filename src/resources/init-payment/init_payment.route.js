@@ -3,6 +3,6 @@ import { initPayment } from './init_payment.service';
 
 const router = Router();
 
-router.route('/').get(initPayment);
+router.route('/').post(initPayment);
 
 export default router;

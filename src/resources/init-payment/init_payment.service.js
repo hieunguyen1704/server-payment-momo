@@ -7,13 +7,14 @@ import crypto from 'crypto';
 
 export const initPayment =  (req, res) =>{
 
+    const {orderId, orderInfo, amount, extraData} = req.body;
   // fake data
     const randomId = uuidv4();
-    const orderId  = randomId;
+    // const orderId  = randomId;
     const requestId = randomId;
-    const orderInfo = "SDK team.";
-    const amount = '150000';
-    const extraData = "email=abc@gmail.com";
+    // const orderInfo = "SDK team.";
+    // const amount = '150000';
+    // const extraData = "email=abc@gmail.com";
 
     const rawSignature = `partnerCode=${momoConfig.partnerCode}&accessKey=${momoConfig.accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&returnUrl=${momoConfig.returnUrl}&notifyUrl=${momoConfig.notifyUrl}&extraData=${extraData}`;
     const signature = crypto.createHmac('sha256', momoConfig.secretKey)
