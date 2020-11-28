@@ -37,7 +37,7 @@ export const initPayment =  (req, res) =>{
         if(response.data && response.data.errorCode === 0){
           return res.status(200).json({meta: meta.success , data: response.data});
         }
-        return res.status(400).json({meta: meta.error});
+        return res.status(400).json({meta: meta.error, data: response.data});
     }).catch((error)=>{
       return res.status(400).json({meta: meta.error ,data: error.message});
     });         
