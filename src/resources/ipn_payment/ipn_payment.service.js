@@ -20,6 +20,7 @@ export const ipnPayment = (req, res) => {
     responseTime,
     payType
   } = req.body;
+  console.log('req.body', req.body);
   //check signature
   const reqRawSignature = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&transId=${transId}&message=${message}&localMessage=${localMessage}&responseTime=${responseTime}&errorCode=${errorCode}&payType=${payType}&extraData=${extraData}`;
   const reqCheckSignature = crypto
